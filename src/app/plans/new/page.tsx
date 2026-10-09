@@ -8,7 +8,8 @@ import { createPlan } from "@/services/plans";
 export default function NewPlanPage() {
   const router = useRouter();
   const [showCancelModal, setShowCancelModal] = useState(false);
-
+  const [listaEquipamiento, setListaEquipamiento] = useState<string[]>([]);
+  const [equipamiento, setEquipamiento] = useState("");
   const [image, setImage] = useState("");
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -18,7 +19,19 @@ export default function NewPlanPage() {
   const [recomendations, setRecomendations] = useState("");
   const [error, setError] = useState("");
 
+  async function handleAddEquipamiento() {
+    if (equipamiento.trim() === "") {
+      return;
+    }
+    setListaEquipamiento([...listaEquipamiento, equipamiento]);
+    setEquipamiento("");
+  }
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    if (!name || !description || !estimatedPrice || !estimatedTime || !recomendations || !address || !image) {
+      setError("Por favor, completa todos los campos");
+      return;
+    }
     e.preventDefault();
     setError("");
 
@@ -90,6 +103,7 @@ export default function NewPlanPage() {
               id="image"
               type="text"
               name="image"
+              required
               value={image}
               onChange={(e) => setImage(e.target.value)}
               placeholder="https://..."
@@ -104,7 +118,8 @@ export default function NewPlanPage() {
           <input
             id="name"
             type="text"
-            name="name"
+            name="name" maxLength={60}
+            required
             autoComplete="nombre-plan"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -113,13 +128,14 @@ export default function NewPlanPage() {
           />
 
           {/* Dirección */}
-          <label className="block font-semibold text-slate-900 mt-8">
+          <label htmlFor="address" className="block font-semibold text-slate-900 mt-8">
             Dirección <span className="text-orange-700">*</span>
           </label>
           <input
             id="address"
             type="text"
             name="address"
+            required
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-500 mt-2 outline-none"
@@ -128,13 +144,14 @@ export default function NewPlanPage() {
           {/* Precio y duración */}
           <div className="grid grid-cols-2 gap-4 mt-8">
             <div>
-              <label className="block font-semibold text-slate-900">
+              <label htmlFor="estimatedPrice" className="block font-semibold text-slate-900">
                 Precio estimado <span className="text-orange-700">*</span>
               </label>
               <input
                 id="estimatedPrice"
                 type="number"
-                name="estimatedPrice"
+                name="estimatedPrice" min={0}
+                required
                 value={estimatedPrice}
                 onChange={(e) => setEstimatedPrice(e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-500 mt-2 outline-none"
@@ -147,7 +164,8 @@ export default function NewPlanPage() {
               <input
                 id="estimatedTime"
                 type="number"
-                name="estimatedTime"
+                name="estimatedTime" min={0}
+                required
                 value={estimatedTime}
                 onChange={(e) => setEstimatedTime(e.target.value)}
                 placeholder="Ej. 120"
@@ -161,11 +179,12 @@ export default function NewPlanPage() {
             <label htmlFor="description" className="font-semibold text-slate-900">
               Descripción del plan <span className="text-orange-700">*</span>
             </label>
-            <p className="text-xs text-slate-300">{description.length} / 600</p>
+            <p className="text-slate-500">{description.length} / 600</p>
           </div>
           <textarea
             id="description"
-            name="description"
+            name="description" minLength={10} maxLength={600}
+            required
             aria-describedby="description-help"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -178,18 +197,36 @@ export default function NewPlanPage() {
           <label htmlFor="recomendations" className="block font-semibold text-slate-900 mt-8">
             Recomendaciones para los asistentes <span className="text-orange-700">*</span>
           </label>
-          <p className="text-sm text-slate-300 mt-1">
+          <p className="text-sm text-slate-500 mt-1">
             Agrega tips clave como vestimenta recomendada, qué llevar o recordatorios puntuales.
           </p>
           <input
             id="recomendations"
             type="text"
             name="recomendations"
+            required
             value={recomendations}
             onChange={(e) => setRecomendations(e.target.value)}
             placeholder="Ej. Llevar protector solar, toalla y agua"
             className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-500 mt-3 outline-none"
           />
+          <label htmlFor="equipamiento" className="block font-semibold text-slate-900 mt-8">
+            Equipamiento necesario
+          </label>
+          <div className="flex gap-2 mt-3">
+            <input
+              type="text"
+              placeholder="Ej. Casco, guantes, botas"
+              className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-500 outline-none"
+            />
+            <button
+              type="button"
+              onClick={handleAddEquipamiento}
+              className="bg-blue-600 text-white font-semibold rounded-xl px-4 py-3"
+            >
+              Agregar
+            </button>
+          </div>
 
           {error && <p className="text-sm text-red-600 mt-6">{error}</p>}
 

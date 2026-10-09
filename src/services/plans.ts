@@ -17,6 +17,7 @@ export type PlanSummary = {
 
 // Así viene un plan cuando se pide su detalle
 export type Plan = {
+  equipment: any;
   id: string;
   name: string;
   likes: number;

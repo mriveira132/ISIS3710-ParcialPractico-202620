@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { getSession } from "@/services/session";
@@ -146,7 +146,7 @@ export default function PlanDetailPage() {
                 ${plan.estimatedPrice.toLocaleString("es-CO")}
               </p>
               <p className="text-sm text-slate-500">/ persona</p>
-            </div>
+            </div>            
 
             <div className="border-t border-b border-slate-200 py-4 mt-6">
               <div className="flex justify-between">
@@ -170,6 +170,18 @@ export default function PlanDetailPage() {
             <p className="text-sm text-slate-500 text-center mt-6">
               Cancelación gratuita hasta 24 horas antes del inicio.
             </p>
+          </div>
+          <div className="bg-white rounded-2xl shadow p-6 mt-8">
+            <h2 className="text-2xl text-slate-900">Equipamiento</h2>
+            {plan.equipment.length > 0 ? (
+              <ul className="list-disc list-inside mt-4 text-slate-600">
+                {plan.equipment.map((item: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined, index: Key | null | undefined) => (
+                  <li key={index}>{item}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-slate-600 mt-4">No se requiere equipamiento especial.</p>
+            )}
           </div>
 
           {/* Experiencia segura */}
